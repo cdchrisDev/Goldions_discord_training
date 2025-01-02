@@ -1,0 +1,67 @@
+# HTTP is Just text
+> HTTP is the protocol that browsers use to retrieve and push information to servers. In it's essence HTTP is just text that follows a certain pattern:
+### 1 - specify resource you're trying to reach (Ex: www.google.com/about)
+### 2 - Headers
+### 3 - Body and message
+
+> GET /about.html HTTP/1.0
+> User-Agent: Mozilla/5.0
+-# Here's how you could retrieve the about page of a website
+
+
+> POST /form.php HTTP/1.0
+> Content-Type: application/x-www-form-urlencoded
+> Content-length: 21
+> 
+> name=John&surname=Doe
+-# And here's how you could send some form data to a web server using POST method
+
+* Client request a single ASCII character string.
+* Client request is terminated by a carriage return (CRLF).
+* Server response is an nASCII character stream.
+* Server response is a hypertext markup language (HTML)
+* Connection is terminated after the document transfer is complete:bun:
+
+## Try [curl](https://everything.curl.dev/), a perfect tool to test web petitions.
+
+# The [socket](https://docs.python.org/3/library/socket.html) python library
+### Sending HTTP responses using sockets
+The **Socket** library is a low-level interface that allow you to send and receive bytes over a network.
+```python
+#!/usr/bin/python3
+import socket
+
+# Define Socket HOST and PORT
+HOST, PORT = '', 8888
+
+# Actually create the socket          # addr         # TCP
+listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #| socket.SOCK_NONBLOCK)  socket object using flags as "|" character, SOCK_NONBLOCK will terminate inmediately if there's no data to read
+listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+listen_socket.bind((HOST, PORT))
+listen_socket.listen(1)
+print(f'Serving HTTP on port {PORT}...')
+while True:
+
+    # wait a connection
+    client_connection, client_address = listen_socket.accept()
+    # Get the client connected for the waiting connection
+    request_data = client_connection.recv(1024)
+    print(request_data.decode('utf-8'))
+    # send response
+    http_response = b"""\
+HTTP/1.1 200 OK
+
+Hello, World!
+"""
+    client_connection.sendall(http_response)
+    client_connection.close()
+# close socket
+listen_socket.close()
+```
+
+So now you can direct put the address of your server which is your machine **IP** while you set your own nameable domain into any browser and you'll get just what we've done so far here `http://localhost:8888/`
+## TASK
+### Changing the response
+* Go ahead and modify the http_response so `hello_world` uses first HTML title tag `<h1>Hello World!</h1>`
+* Modify the code to response an `index.html` which is the root `/` of pretty much avery website *read about `open()` [function](https://docs.python.org/3/library/functions.html#open)
+
