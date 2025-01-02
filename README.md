@@ -1,1 +1,1 @@
-# Goldions_discord_training
+# Goldions_discord_training LOL
